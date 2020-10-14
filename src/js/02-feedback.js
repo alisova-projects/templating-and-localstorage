@@ -2,6 +2,7 @@ import throttle from 'lodash.throttle';
 import '../css/common.css';
 import '../css/feedback-form.css';
 
+// заменяем паттерн "Магические числа и строки" на КОНСТАНТУ:
 const STORAGE_KEY = 'feedback-msg';
 
 const refs = {
@@ -10,7 +11,7 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', onFormSubmit);
-refs.textarea.addEventListener('input', throttle(onTextareaInput, 200));
+refs.textarea.addEventListener('input', throttle(onTextareaInput, 1000));
 
 populateTextarea();
 
@@ -22,8 +23,8 @@ populateTextarea();
 function onFormSubmit(evt) {
   evt.preventDefault();
 
-  console.log('Отправляем форму');
   evt.currentTarget.reset();
+
   localStorage.removeItem(STORAGE_KEY);
 }
 
@@ -34,6 +35,7 @@ function onFormSubmit(evt) {
  */
 function onTextareaInput(evt) {
   const message = evt.target.value;
+  console.log(message);
 
   localStorage.setItem(STORAGE_KEY, message);
 }
@@ -46,20 +48,29 @@ function populateTextarea() {
   const savedMessage = localStorage.getItem(STORAGE_KEY);
 
   if (savedMessage) {
+    console.log(savedMessage);
     refs.textarea.value = savedMessage;
   }
 }
 
 // Домой
-// сделать так чтобы сохраняло не только сообщение но и имя, и все в одном обьекте
+// сделать так чтобы сохраняло не только сообщение, но и имя, и все в одном обьекте
 
-// const formData = {};
+const formData = {};
 
-// refs.form.addEventListener('input', e => {
-//   // console.log(e.target.name);
-//   // console.log(e.target.value);
+refs.form.addEventListener('input', e => {
+  // console.log(e.target.name);
+  // console.log(e.target.value);
 
-//   formData[e.target.name] = e.target.value;
+  formData[e.target.name] = e.target.value;
 
-//   console.log(formData);
-// });
+  // console.log(formData);
+
+  const savedFormData = JSON.stringify(formData);
+  console.log('savedFormData', savedFormData);
+
+  console.log(localStorage.setItem('savedFormData', savedFormData));
+
+  const saved = localStorage.getItem('savedFormData');
+  console.log(JSON.parse(saved));
+});
